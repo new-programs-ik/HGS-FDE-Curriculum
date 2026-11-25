@@ -1,0 +1,13 @@
+# 18-aws-identity — AWS identity resolves (STS)
+# run: 2026-07-30 05:21 UTC
+# cwd: .
+# exit: 0   status: PASS
+
+$ aws sts get-caller-identity
+
+{
+    "UserId": "AIDARCKLVWEUVAETJPOXR",
+    "Account": "123456789012",
+    "Arn": "arn:aws:iam::123456789012:user/example-user"
+}
+

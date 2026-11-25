@@ -1,0 +1,8 @@
+# 17-slack-auth — Slack token identifies the bot + workspace
+# run: 2026-07-30 05:21 UTC
+# cwd: course/week-16/lab
+# exit: 0   status: PASS
+
+$ curl -s -H "Authorization: Bearer $SLACK_BOT_TOKEN" https://slack.com/api/auth.test
+
+{"ok":true,"url":"https:\/\/example-workspace.slack.com\/","team":"example-workspace","user":"meridianescalations","team_id":"T00000000","user_id":"U00000001","bot_id":"B00000000","is_enterprise_install":false}

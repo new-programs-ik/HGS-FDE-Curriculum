@@ -1,0 +1,376 @@
+{
+  "version": "2.0.0",
+  "presentation": {
+    "panel": "new",
+    "reveal": "always",
+    "focus": false,
+    "clear": false,
+    "echo": true,
+    "showReuseMessage": false
+  },
+  "options": {
+    "cwd": "${workspaceFolder}",
+    "env": {
+      "PYTHONUTF8": "1",
+      "PYTHONUNBUFFERED": "1"
+    }
+  },
+  "windows": {
+    "options": {
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONUTF8": "1",
+        "PYTHONUNBUFFERED": "1",
+        "PROMPTFOO_PYTHON": "python",
+        "PATH": "${env:USERPROFILE}/bin;${env:PATH}"
+      },
+      "shell": {
+        "executable": "C:/Program Files/Git/bin/bash.exe",
+        "args": [
+          "-c"
+        ]
+      }
+    }
+  },
+  "tasks": [
+    {
+      "label": "Run all commands (01-05)",
+      "detail": "each command in its own new terminal, in order; no browser tabs; skips AWS, Slack-token and LLM commands and the teardown, so the console stays up",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "01 - Check Prerequisites With Doctor",
+        "01 - Start Bank Database And Seed",
+        "01 - Save Analyst Keys To Env",
+        "01 - Serve Ops Console Locally",
+        "01 - Run Live Triage Agent Demo",
+        "01 - Run Smoke Eval Gate",
+        "01 - Show Ops Console Pages",
+        "01 - Run Agent Unit Tests",
+        "02 - Score Stack Choice Matrix",
+        "02 - Run Integration Topology Selector",
+        "02 - Open Pricing Calculator Browser",
+        "02 - Check Platform API Health",
+        "02 - Prove API RBAC Two Keys",
+        "03 - Run Agent Primitives Demo",
+        "03 - Run End To End Pipeline",
+        "03 - Trip The Output Guardrail",
+        "03 - Run Verify CI Gate",
+        "03 - Run Strands Portability Demo",
+        "03 - Serve AgentCore App Locally",
+        "03 - Invoke Local AgentCore App",
+        "03 - Stop Local AgentCore App",
+        "04 - Run Governed MCP Door",
+        "04 - Run Two Analyst RBAC Test",
+        "04 - Run Door Against Live Portal",
+        "04 - Plan AgentCore Gateway Setup",
+        "04 - Run Slack Escalation Scenarios",
+        "04 - Selftest Slack MCP Server",
+        "04 - Selftest Two Way Slack Bot",
+        "05 - Run Full Golden Gate",
+        "05 - Run Adversarial Cases Only",
+        "05 - Cross Check With Promptfoo",
+        "05 - Rehearse The Incident Drill"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Check Prerequisites With Doctor",
+      "type": "shell",
+      "command": "cd codebase && make doctor",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Start Bank Database And Seed",
+      "type": "shell",
+      "command": "cd codebase && make up",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Save Analyst Keys To Env",
+      "type": "shell",
+      "command": "bash .vscode/save-keys.sh",
+      "problemMatcher": [],
+      "detail": "helper step (not one of the commands in commands.md)"
+    },
+    {
+      "label": "01 - Serve Ops Console Locally",
+      "type": "shell",
+      "command": "bash .vscode/start-bg.sh console",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Run Live Triage Agent Demo",
+      "type": "shell",
+      "command": "cd codebase/agent && uv run --extra db meridian-agent run --dispute 29 --mock",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Run Smoke Eval Gate",
+      "type": "shell",
+      "command": "cd codebase && make eval",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Show Ops Console Pages",
+      "type": "shell",
+      "command": "ok=1\nfor u in http://localhost:3100/login http://localhost:3100/ http://localhost:3100/disputes \\\n         http://localhost:3100/disputes/29 http://localhost:3100/transactions \\\n         http://localhost:3100/customers http://localhost:3100/policies \\\n         https://ik-fde-casestudy-bank.vercel.app; do\n  c=$(curl -s -o /dev/null -L --max-time 20 -w '%{http_code}' \"$u\"); echo \"HTTP $c  $u\"\n  [ \"$c\" = 200 ] || ok=0\ndone\n[ $ok = 1 ]",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Run Agent Unit Tests",
+      "type": "shell",
+      "command": "cd codebase && make test",
+      "problemMatcher": []
+    },
+    {
+      "label": "01 - Set Up Agent Evolution Demo",
+      "type": "shell",
+      "command": "cd .. && git clone https://github.com/eliharoun/evolution-of-ai-agents-architecture.git && cd evolution-of-ai-agents-architecture && uv venv && uv pip install -r requirements.txt && cp .env.example .env",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "01 - Run Stage 1 ReAct Demo",
+      "type": "shell",
+      "command": "cd ../evolution-of-ai-agents-architecture && uv run python stage_1/demo.py",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "01 - Run Stage 2 Tool Overload Demo",
+      "type": "shell",
+      "command": "cd ../evolution-of-ai-agents-architecture && uv run python stage_2/demo.py",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "01 - Run Stage 3 ReWOO Demo",
+      "type": "shell",
+      "command": "cd ../evolution-of-ai-agents-architecture && uv run python stage_3/rewoo_demo.py",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "01 - Run Stage 4 Supervisor Demo",
+      "type": "shell",
+      "command": "cd ../evolution-of-ai-agents-architecture && uv run python stage_4/supervisor_2/demo.py",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "01 - Serve Agent Evolution Backend",
+      "type": "shell",
+      "command": "cd ../evolution-of-ai-agents-architecture && STAGE=1 uv run uvicorn backend.api:app --reload",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "01 - Serve Agent Evolution Frontend",
+      "type": "shell",
+      "command": "cd ../evolution-of-ai-agents-architecture/frontend && python3 -m http.server 8080",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "02 - Score Stack Choice Matrix",
+      "type": "shell",
+      "command": "cd codebase/labs/design/demo && python3 stack_matrix.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "02 - Run Integration Topology Selector",
+      "type": "shell",
+      "command": "cd codebase/labs/design/demo && python3 topology.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "02 - Open Pricing Calculator Browser",
+      "type": "shell",
+      "command": "bash .vscode/show-url.sh https://ik-fde-calculator.vercel.app",
+      "problemMatcher": []
+    },
+    {
+      "label": "02 - Check Platform API Health",
+      "type": "shell",
+      "command": "curl -s http://localhost:3100/api/v1/health; echo",
+      "problemMatcher": []
+    },
+    {
+      "label": "02 - Prove API RBAC Two Keys",
+      "type": "shell",
+      "command": "cd codebase && set -a && source .env && set +a && curl -s -o /dev/null -w \"no key     -> %{http_code}\\n\" http://localhost:3100/api/v1/disputes/29 && curl -s -o /dev/null -w \"Type-A key -> %{http_code}\\n\" -H \"Authorization: Bearer $MERIDIAN_KEY_A\" http://localhost:3100/api/v1/disputes/29 && curl -s -o /dev/null -w \"Type-B key -> %{http_code}\\n\" -H \"Authorization: Bearer $MERIDIAN_KEY_B\" http://localhost:3100/api/v1/disputes/29",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Run Agent Primitives Demo",
+      "type": "shell",
+      "command": "cd codebase/labs/build/demo && python3 demo1_primitives.py --mock",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Run End To End Pipeline",
+      "type": "shell",
+      "command": "cd codebase/labs/build/demo && python3 demo2_pipeline.py --dispute 29 --mock",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Trip The Output Guardrail",
+      "type": "shell",
+      "command": "cd codebase/labs/build/demo && python3 demo2_pipeline.py --dispute 29 --mock --tripwire",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Run Verify CI Gate",
+      "type": "shell",
+      "command": "cd codebase && make verify",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Run Strands Portability Demo",
+      "type": "shell",
+      "command": "cd codebase/labs/build/demo && python3 demo3_strands.py --mock",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Serve AgentCore App Locally",
+      "type": "shell",
+      "command": "bash .vscode/start-bg.sh agentcore",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Invoke Local AgentCore App",
+      "type": "shell",
+      "command": "curl -s localhost:8080/ping; echo; curl -s -X POST localhost:8080/invocations -d '{\"dispute_id\": 29}'; echo",
+      "problemMatcher": []
+    },
+    {
+      "label": "03 - Stop Local AgentCore App",
+      "type": "shell",
+      "command": "bash .vscode/stop-port.sh 8080",
+      "problemMatcher": [],
+      "detail": "helper step (not one of the commands in commands.md)"
+    },
+    {
+      "label": "03 - Deploy Lambda Agent Endpoint",
+      "type": "shell",
+      "command": "cd codebase/labs/build/demo/deploy && ./deploy.sh && ./invoke.sh 29 && ./teardown.sh",
+      "problemMatcher": [],
+      "detail": "AWS: creates billed resources; not part of Run all"
+    },
+    {
+      "label": "03 - Deploy To AgentCore Runtime",
+      "type": "shell",
+      "command": "cd codebase/labs/build/demo/deploy/agentcore && pip install bedrock-agentcore-starter-toolkit && agentcore configure -e app.py -n meridian_triage -r us-east-1 -dt direct_code_deploy -rf requirements.txt --non-interactive && agentcore deploy --env MERIDIAN_BASE_URL=$MERIDIAN_BASE_URL --env MERIDIAN_API_KEY=$MERIDIAN_API_KEY && agentcore invoke '{\"dispute_id\": 29}' && agentcore destroy --agent meridian_triage --force",
+      "problemMatcher": [],
+      "detail": "AWS: creates billed resources; not part of Run all"
+    },
+    {
+      "label": "04 - Run Governed MCP Door",
+      "type": "shell",
+      "command": "cd codebase && make mcp",
+      "problemMatcher": []
+    },
+    {
+      "label": "04 - Run Two Analyst RBAC Test",
+      "type": "shell",
+      "command": "cd codebase/labs/integrate && python3 mcp_demo.py 4417",
+      "problemMatcher": []
+    },
+    {
+      "label": "04 - Run Door Against Live Portal",
+      "type": "shell",
+      "command": "cd codebase && set -a && source .env && set +a && make mcp-live",
+      "problemMatcher": []
+    },
+    {
+      "label": "04 - Plan AgentCore Gateway Setup",
+      "type": "shell",
+      "command": "cd codebase/labs/integrate/agentcore_gateway && python3 gateway_setup.py plan",
+      "problemMatcher": []
+    },
+    {
+      "label": "04 - Run AgentCore Gateway Rungs",
+      "type": "shell",
+      "command": "cd codebase && set -a && source .env && set +a && cd labs/integrate/agentcore_gateway && python3 gateway_setup.py apply && python3 gateway_setup.py invoke && python3 gateway_setup.py destroy",
+      "problemMatcher": [],
+      "detail": "AWS: creates billed resources; not part of Run all"
+    },
+    {
+      "label": "04 - Run Slack Escalation Scenarios",
+      "type": "shell",
+      "command": "cd codebase && make slack",
+      "problemMatcher": []
+    },
+    {
+      "label": "04 - Post Real Slack Card",
+      "type": "shell",
+      "command": "cd codebase && set -a && source .env && set +a && make slack-live",
+      "problemMatcher": [],
+      "detail": "needs SLACK_BOT_TOKEN + SLACK_CHANNEL_ID; not part of Run all"
+    },
+    {
+      "label": "04 - Selftest Slack MCP Server",
+      "type": "shell",
+      "command": "cd codebase && make slack-mcp",
+      "problemMatcher": []
+    },
+    {
+      "label": "04 - Selftest Two Way Slack Bot",
+      "type": "shell",
+      "command": "cd codebase && set -a && source .env && set +a && make slack-bot-test",
+      "problemMatcher": []
+    },
+    {
+      "label": "05 - Run Full Golden Gate",
+      "type": "shell",
+      "command": "cd codebase && make golden",
+      "problemMatcher": []
+    },
+    {
+      "label": "05 - Run Adversarial Cases Only",
+      "type": "shell",
+      "command": "cd codebase/agent && uv run meridian-agent eval --suite golden --min-pass 0.95 --mock --category adversarial",
+      "problemMatcher": []
+    },
+    {
+      "label": "05 - Cross Check With Promptfoo",
+      "type": "shell",
+      "command": "cd codebase/labs/prove && npx --yes promptfoo@latest eval -c promptfoo-golden.yaml --no-cache",
+      "problemMatcher": []
+    },
+    {
+      "label": "05 - Run Promptfoo Rubric Grader",
+      "type": "shell",
+      "command": "cd codebase/labs/prove && ollama pull llama3.1 && npx --yes promptfoo@latest eval -c promptfoo.yaml --no-cache",
+      "problemMatcher": [],
+      "detail": "needs an LLM (API key or Ollama model); not part of Run all"
+    },
+    {
+      "label": "05 - Check AgentCore Trace Spans",
+      "type": "shell",
+      "command": "python3 codebase/labs/prove/check_spans.py --hours 24",
+      "problemMatcher": [],
+      "detail": "AWS: creates billed resources; not part of Run all"
+    },
+    {
+      "label": "05 - Rehearse The Incident Drill",
+      "type": "shell",
+      "command": "cd codebase/labs/prove && python3 incident_drill.py --inject-at 30 --rollback-at 75 --requests 100 --fast && rm -f incident_traces.jsonl incident_rca_reference.txt INCIDENT_ON",
+      "problemMatcher": []
+    },
+    {
+      "label": "05 - Stop Database After Class",
+      "type": "shell",
+      "command": "cd codebase && make down",
+      "problemMatcher": [],
+      "detail": "teardown: not part of Run all, so the console stays up"
+    },
+    {
+      "label": "05 - Stop Ops Console Server",
+      "type": "shell",
+      "command": "bash .vscode/stop-port.sh 3100",
+      "problemMatcher": [],
+      "detail": "teardown: not part of Run all, so the console stays up"
+    }
+  ]
+}
